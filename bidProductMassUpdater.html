@@ -1,0 +1,151 @@
+<!--
+  @author            : salihcendik
+  @last modified on  : 09-11-2023
+  @last modified by  : salihcendik
+-->
+<template>
+    <lightning-spinner if:true={showSpinner} alternative-text="Loading" size="medium"
+        variant="brand"></lightning-spinner>
+
+    <!-- Page Header Starts -->
+    <div class="slds-page-header" role="banner">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col">
+                <div class="slds-media slds-no-space slds-grow">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="custom:custom44" alternative-text="New"
+                            title="Bid Products Form"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <p class="slds-text-title_caps">Bid</p>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate"
+                            title="">{theBid.Name}</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-large-col_bump-left">
+                <lightning-helptext if:true={disableButton}
+                    content="İhale Durumu 'Açık' olan ihale ürünleri güncellenebilir.">
+                </lightning-helptext>
+                <button class="slds-button slds-button_brand" disabled={disableButton}
+                    onclick={handleSave}>Save</button>
+
+            </div>
+        </div>
+    </div>
+    <!-- Page Header Ends -->
+
+    <!-- Line Section Starts -->
+    <table
+        class="slds-table slds-table--bordered slds-table--cell-buffer slds-table slds-table_bordered slds-table_resizable-cols"
+        role="grid">
+        <thead>
+            <tr class="slds-text-title--caps" style="background: #f7f9fb">
+                <th class="slds-is-resizable" scope="col" style="width:1%">
+                    <div class="slds-cell-wrap">SAP #</div>
+                </th>
+                <th class="slds-is-resizable" scope="col" style="width:1%">
+                    <div class="slds-cell-wrap"></div>
+                </th>
+                <th class="slds-is-resizable" scope="col">
+                    <div class="slds-cell-wrap"></div>
+                </th>
+                <th class="slds-is-resizable" scope="col">
+                    <div class="slds-cell-wrap">{label.productCode}</div>
+                </th>
+                <th class="slds-is-resizable" scope="col">
+                    <div class="slds-cell-wrap">{label.productName}</div>
+                </th>
+                <th class="slds-is-resizable" scope="col" style="width:215px">
+                    <div class="slds-cell-wrap">{label.stock}</div>
+                </th>
+                <th class="slds-is-resizable" scope="col">
+                    <div class="slds-cell-wrap">{label.quantity}</div>
+                </th>
+                <th class="slds-is-resizable" scope="col">
+                    <div class="slds-cell-wrap">{label.unit}</div>
+                </th>
+                <th class="slds-is-resizable" scope="col">
+                    <div class="slds-cell-wrap">{label.unitPrice}</div>
+                </th>
+                <th class="slds-is-resizable" scope="col">
+                    <div class="slds-cell-wrap">{label.currency}</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={bidItems} for:item="bidItem">
+                <tr key={bidItem.SAP_Item_Number__c} class="hooks-table__section hooks-table__section_end">
+
+                    <!-- Row No -->
+                    <td class="slds-cell-wrap">
+                        {bidItem.SAP_Item_Number__c}
+                    </td>
+
+                    <!-- Button Delete -->
+                    <td class="slds-cell-wrap">
+                        <lightning-button-icon data-id={bidItem.SAP_Item_Number__c} data-recordid={bidItem.Id}
+                            onclick={handleDeleteItem} icon-name="utility:delete" alternative-text="Delete Item"
+                            class="slds-m-left_xx-small slds-align_absolute-center" title="Delete Item"
+                            disabled={disableButton}></lightning-button-icon>
+                    </td>
+
+                    <td class="slds-cell-wrap">
+                        <img src={bidItem.Product_Image_Link__c} alt="Product Image" style="height:50px; width:50px;"
+                            onerror={handleBrokenImage} border="0" />
+                    </td>
+
+                    <td class="slds-cell-wrap">
+                        {bidItem.Product_Code__c}
+                    </td>
+
+                    <td class="slds-cell-wrap">
+                        <c-lwc-look-up input-id={bidItem.SAP_Item_Number__c} input-data-id={bidItem.SAP_Item_Number__c}
+                            input-placeholder="Search Product" input-required="false" input-search={handleProductSearch}
+                            input-selected-record-id={bidItem.RTM_Bid_Product__c}
+                            input-selected-label={bidItem.RTM_Bid_Product_Name__c}
+                            input-selected-icon="standard:product" oninputselect={handleProductSelect}></c-lwc-look-up>
+                    </td>
+
+                    <td class="slds-cell-wrap">
+                        <lightning-combobox data-id={bidItem.SAP_Item_Number__c} data-code={bidItem.Product_Code__c}
+                            name="stockInfo" variant="label-hidden" placeholder="Please double click"
+                            value={bidItem.selectedStock} options={bidItem.stockOptions} ondblclick={getStocks}
+                            onchange={handleStockChange} style="width:215px"></lightning-combobox>
+                    </td>
+
+                    <td class="slds-cell-wrap">
+                        <lightning-input type="number" data-field="Quantity" data-id={bidItem.SAP_Item_Number__c}
+                            variant="label-hidden" value={bidItem.RTM_Bid_Quantity__c} step="0.01" min="0"
+                            max={bidItem.maxQuantity} required="true" onblur={handleQtyChange}></lightning-input>
+                    </td>
+
+                    <td class="slds-cell-wrap">
+                        {bidItem.UnitLabel}
+                    </td>
+                    <td class="slds-cell-wrap">
+                        <lightning-input type="number" data-field="UnitPrice" data-id={bidItem.SAP_Item_Number__c}
+                            variant="label-hidden" step="0.01" min="0" value={bidItem.RTM_Bid_Unit_Price__c}
+                            onkeyup={handleUnitPriceChange}></lightning-input>
+                    </td>
+                    <td class="slds-cell-wrap">
+                        {bidItem.CurrencyIsoCode}
+                    </td>
+                </tr>
+            </template>
+
+            <!-- Button Add Item -->
+            <tr class="hooks-table__section hooks-table__section_end">
+                <td class="slds-cell-wrap">
+                    <lightning-button-icon onclick={handleAddItem} icon-name="utility:add" alternative-text="Add Item"
+                        class="slds-m-left_xx-small slds-align_absolute-center" title="Add Item"
+                        disabled={disableButton}>Add
+                        Item</lightning-button-icon>
+                </td>
+                <td colspan="9" class="slds-cell-wrap">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- Line Section Ends -->
+</template>

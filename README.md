@@ -1,5 +1,5 @@
 # bidproduct-mass-updater
-İhale ürün kayıtlarının toplu güncellenmesi
+İhale ürünleri için stok servisinin çağrılarak stok bilgilerinin görüntülenmesi ve toplu güncellemelerin yapılabilmesi için geliştirilen component.  
 
 ![image](https://github.com/salihcendik/bidproduct-mass-updater/assets/54000612/11004fcc-ff19-4fcb-9a02-e557b42be841)
 

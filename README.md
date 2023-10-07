@@ -1,6 +1,6 @@
 # bidproduct-mass-updater
 * Bir ihale kaydı üzerindeki "Add/Edit Product" butonuna tıklandığında ihale ürünleri listenir.
-* Stok alanına çift tıklandığında sap stok servisine istek atılarak stok bilgilerini görüntülenir.
+* Stok alanına çift tıklandığında sap stok servisine istek atılarak stok bilgileri görüntülenir.
 * Stok bilgilerinden biri seçildiğinde miktar alanı otomatik güncellenir.
 * Seçilen stok miktarından daha fazla miktar girilemez.  
 
